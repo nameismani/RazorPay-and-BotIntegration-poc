@@ -7,10 +7,53 @@ export default function Home() {
   const [description, setDescription] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ amount, description, currency: "INR" });
-    setSubmitted(true);
+    try {
+      const data: any = await fetch("/api/intitatePayment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount }),
+      }).then((res) => res.json());
+      console.log(
+        process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        data,
+        "asdfdsf key id"
+      );
+      const paymentData = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        order_id: data?.orderId,
+
+        // handler: async function (response: any) {
+        //   console.log(response, "asdfdsf");
+        //   const res = await fetch("/api/verifyPayment", {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //       orderId: response.razorpay_order_id,
+        //       razorpayPaymentId: response.razorpay_payment_id,
+        //       razorpaySignature: response.razorpay_signature,
+        //     }),
+        //   });
+        // const data = await res.json();
+        // console.log(data);
+        // if (data.isOk) {
+        //   // do whatever page transition you want here as payment was successful
+        //   alert("Payment successful");
+        // } else {
+        //   alert("Payment failed");
+        // }
+        // },
+      };
+      console.log(paymentData, "asdfdsf payment data");
+      const payment = new (window as any).Razorpay(paymentData);
+      payment.open();
+      setSubmitted(true);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -60,7 +103,7 @@ export default function Home() {
                   id="description"
                   name="description"
                   rows={3}
-                  className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                  className="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 p-1"
                   placeholder="What is this payment for?"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
