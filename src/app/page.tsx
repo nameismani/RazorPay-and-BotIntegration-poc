@@ -26,31 +26,39 @@ export default function Home() {
       const paymentData = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         order_id: data?.orderId,
+        name: "Test payment",
+        // amount: amount,
+        // currency: "INR",
+        description: description,
+        image:
+          "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
 
-        // handler: async function (response: any) {
-        //   console.log(response, "asdfdsf");
-        //   const res = await fetch("/api/verifyPayment", {
-        //     method: "POST",
-        //     body: JSON.stringify({
-        //       orderId: response.razorpay_order_id,
-        //       razorpayPaymentId: response.razorpay_payment_id,
-        //       razorpaySignature: response.razorpay_signature,
-        //     }),
-        //   });
-        // const data = await res.json();
-        // console.log(data);
-        // if (data.isOk) {
-        //   // do whatever page transition you want here as payment was successful
-        //   alert("Payment successful");
-        // } else {
-        //   alert("Payment failed");
-        // }
+        handler: async function (response: any) {
+          // console.log(response, "asdfdsf");
+          const res = await fetch("/api/verifyPayment", {
+            method: "POST",
+            body: JSON.stringify({
+              orderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            }),
+          });
+          const data = await res.json();
+          console.log(data);
+          if (data.isOk) {
+            alert("Payment successful");
+            setSubmitted(true);
+          } else {
+            alert("Payment failed");
+          }
+        },
+        // theme: {
+        //   color: "#3399cc",
         // },
       };
       console.log(paymentData, "asdfdsf payment data");
       const payment = new (window as any).Razorpay(paymentData);
       payment.open();
-      setSubmitted(true);
     } catch (err) {
       console.log(err);
     }
