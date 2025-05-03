@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Plan {
     id: string;
@@ -19,6 +20,7 @@ interface Subscription {
     plan_name?: string;
     status: string;
     current_end: number;
+    short_url?: string;
 }
 
 interface RazorpayResponse {
@@ -28,6 +30,7 @@ interface RazorpayResponse {
 }
 
 const SubscriptionPage = () => {
+    const router = useRouter();
     const [plans, setPlans] = useState<Plan[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -141,7 +144,6 @@ const SubscriptionPage = () => {
                 paymentObject.open();
                 paymentObject.on("payment.failed", async function (response: any) {
                     alert("payment failed")
-
                 });
             } else {
                 alert(data.error || 'Failed to create subscription');
@@ -152,7 +154,10 @@ const SubscriptionPage = () => {
         }
     };
 
-    const handleCancelSubscription = async (subscriptionId: string) => {
+    const handleCancelSubscription = async (subscriptionId: string, e: React.MouseEvent) => {
+        // Prevent row click event from triggering
+        e.stopPropagation();
+
         if (!confirm('Are you sure you want to cancel this subscription?')) {
             return;
         }
@@ -181,6 +186,10 @@ const SubscriptionPage = () => {
             console.error('Error cancelling subscription:', err);
             alert('Error cancelling subscription');
         }
+    };
+
+    const navigateToSubscriptionDetails = (subscriptionId: string) => {
+        router.push(`/subscription/${subscriptionId}`);
     };
 
     if (loading) {
@@ -254,7 +263,11 @@ const SubscriptionPage = () => {
                                     </thead>
                                     <tbody className="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         {activeSubscriptions.map((subscription) => (
-                                            <tr key={subscription.id}>
+                                            <tr
+                                                key={subscription.id}
+                                                onClick={() => navigateToSubscriptionDetails(subscription.id)}
+                                                className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                                            >
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{subscription.plan_name || 'Unknown Plan'}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${subscription.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
@@ -268,7 +281,7 @@ const SubscriptionPage = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                     <button
-                                                        onClick={() => handleCancelSubscription(subscription.id)}
+                                                        onClick={(e) => handleCancelSubscription(subscription.id, e)}
                                                         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                                     >
                                                         Cancel
