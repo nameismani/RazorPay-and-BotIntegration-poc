@@ -392,3 +392,8 @@ const subscription = await razorpay.subscriptions.create({
 4. Monitor Webhook Failures : Set up monitoring to alert you if webhooks are failing to process.
 5. Implement Idempotency : Ensure your webhook handlers are idempotent (can be called multiple times without causing issues) as Razorpay may retry webhook deliveries.
 By implementing these patterns, you'll have a robust system for tracking recurring payments in your application, even when they're processed automatically by Razorpay.
+
+
+ docker build -t razorpay-and-bot .
+
+ docker run -p 3000:3000 --env-file .env razorpay-and-bot

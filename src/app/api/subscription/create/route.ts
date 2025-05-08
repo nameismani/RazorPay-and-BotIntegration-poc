@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         // Create a subscription
         const subscription = await razorpay.subscriptions.create({
             plan_id: planId,
-            customer_notify: 1,
+            customer_notify: 0,
             quantity: 1,
             total_count: 12, // Number of billing cycles (optional)
             // customer_id: customerId, // Uncomment if you're using customer ID
