@@ -401,4 +401,8 @@ By implementing these patterns, you'll have a robust system for tracking recurri
  npm install @googlemaps/js-api-loader
 
  npm install @types/google.maps --save-dev
- AIzaSyAyJRHph02Uss3sTsIy1JDJ4BDk4ea_N68fsdf
+ AIzaSyAyJRHph02Uss3sTsIy1JDJ4BDk4ea_N68sTsI
+
+ - Maps JavaScript API
+- Directions API
+- Places API
