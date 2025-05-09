@@ -397,3 +397,8 @@ By implementing these patterns, you'll have a robust system for tracking recurri
  docker build -t razorpay-and-bot .
 
  docker run -p 3000:3000 --env-file .env razorpay-and-bot
+
+ npm install @googlemaps/js-api-loader
+
+ npm install @types/google.maps --save-dev
+ AIzaSyAyJRHph02Uss3sTsIy1JDJ4BDk4ea_N68fsdf
